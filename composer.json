@@ -15,7 +15,8 @@
     "yajra/laravel-datatables-html": "^3.1",
     "yajra/laravel-datatables-oracle": "~8.0",
     "laravelcollective/html": "~5.0",
-    "laravel/framework": "5.5.*"
+    "laravel/framework": "5.5.*",
+    "ronappleton/menubuilder": "dev-master"
   },
   "autoload": {
     "psr-4": {

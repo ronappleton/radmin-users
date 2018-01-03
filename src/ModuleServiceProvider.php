@@ -3,9 +3,12 @@
 namespace RonAppleton\Radmin\Users;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Events\Dispatcher;
+use RonAppleton\MenuBuilder\Traits\AddsMenu;
 
 class ModuleServiceProvider extends ServiceProvider
 {
+    use AddsMenu;
     /**
      * The application instance.
      *
@@ -35,22 +38,35 @@ class ModuleServiceProvider extends ServiceProvider
         $this->app = $app;
     }
 
-    public function boot()
+    public function boot(Dispatcher $events)
     {
-        $this->publishes([
-            __DIR__ . '/config/radmin-users.php' => config_path('radmin-users.php'),
-        ]);
-        ;
-        $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
-
         $this->loadViews();
+        $this->publishConfig();
+        $this->menuListener($events);
     }
 
     public function register()
     {
     }
 
+
+    private function publishConfig()
+    {
+        $configPath = $this->packagePath('config/radmin-users.php');
+
+        $this->publishes([
+            $configPath => config_path('radmin-users.php'),
+        ], 'config');
+
+        $this->mergeConfigFrom($configPath, 'radmin-users');
+    }
+
+    private function packagePath($path)
+    {
+        return __DIR__ . "/../$path";
+    }
 
     protected function loadViewsFrom($path, $namespace)
     {
@@ -67,7 +83,7 @@ class ModuleServiceProvider extends ServiceProvider
 
     private function loadViews()
     {
-        $viewPath = __DIR__ . '/resources/views';
+        $viewPath = __DIR__ . '/../resources/views';
 
         $this->loadViewsFrom($viewPath, 'radmin-users');
 
@@ -76,4 +92,30 @@ class ModuleServiceProvider extends ServiceProvider
         ], 'views');
     }
 
+    public function menusidebar()
+    {
+        $configItems = config('radmin-users.menu-items');
+
+        $submenu[] = [
+            'text' => 'Manage',
+            'url' => 'admin/users',
+            'icon' => 'user',
+            'priority' => 'medium-high',
+            'dropped',
+        ];
+
+        foreach($configItems as $configItem)
+        {
+            $submenu[] = $configItem;
+        }
+
+        return [
+            [
+                'text' => 'Users',
+                'url' => '#',
+                'icon' => 'users',
+                'submenu' => $submenu,
+            ],
+        ];
+    }
 }
