@@ -1,0 +1,37 @@
+{
+  "name": "ronappleton/radmin-users",
+  "description": "For adding user management to radmin based projects",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ron Appleton",
+      "email": "ron.appleton@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "yajra/laravel-datatables-buttons": "^3.0",
+    "yajra/laravel-datatables-html": "^3.1",
+    "yajra/laravel-datatables-oracle": "~8.0",
+    "laravelcollective/html": "~5.0",
+    "laravel/framework": "5.5.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "RonAppleton\\Radmin\\Users\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "RonAppleton\\Radmin\\Users\\ModuleServiceProvider"
+      ],
+      "aliases": {
+      }
+    }
+  }
+}
